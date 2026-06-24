@@ -53,7 +53,7 @@ export default function Footer() {
               &copy; {new Date().getFullYear()} Resumind. Built for careers.
             </p>
             <a
-              href="https://github.com/zaid0091"
+              href="https://github.com/zaid0091/Resumind"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-xs text-ink-mute hover:text-ink transition-colors"
