@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ resume.title }}</title>
+  <style>
+    :root { --accent: {{ color_theme|default:"#3498db" }}; }
+    @page { size: A4; margin: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+      font-size: {% if font_size == "small" %}9pt{% elif font_size == "large" %}11pt{% else %}10pt{% endif %};
+      line-height: 1.5;
+      color: #333;
+      width: 210mm;
+      min-height: 297mm;
+    }
+    .layout-table { width: 100%; border-collapse: collapse; }
+    .layout-table td { vertical-align: top; }
+
+    .sidebar {
+      width: 260px;
+      background: #2c3e50;
+      color: #ecf0f1;
+      padding: 32px 20px;
+    }
+    .sidebar .photo {
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      margin: 0 auto 20px;
+      border: 3px solid var(--accent);
+    }
+    .sidebar h3 {
+      color: var(--accent);
+      font-size: 11pt;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 24px 0 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+    .sidebar .contact-item {
+      font-size: 9pt;
+      margin-bottom: 6px;
+      word-break: break-all;
+    }
+    .sidebar .skill-item {
+      font-size: 9pt;
+      margin-bottom: 4px;
+    }
+    .sidebar .skill-bar {
+      width: 60px; height: 6px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 3px;
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+    .sidebar .skill-fill {
+      height: 6px;
+      background: var(--accent);
+      border-radius: 3px;
+    }
+    .sidebar a { color: var(--accent); text-decoration: none; }
+
+    .main {
+      padding: 32px 36px;
+    }
+    .main h1 {
+      font-size: 20pt;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 4px;
+    }
+    .main .title-line {
+      font-size: 11pt;
+      color: #7f8c8d;
+      margin-bottom: 16px;
+    }
+    .main .section { margin-bottom: 18px; }
+    .main .section h2 {
+      font-size: 13pt;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding-bottom: 3px;
+      margin-bottom: 8px;
+      border-bottom: 2px solid var(--accent);
+    }
+    .main .entry-header {
+      font-weight: 600;
+      font-size: 10.5pt;
+      margin-top: 8px;
+    }
+    .main .entry-header .left { float: left; }
+    .main .entry-header .right { float: right; }
+    .main .entry-header::after { content: ""; display: table; clear: both; }
+    .main .entry-sub {
+      font-size: 9.5pt;
+      color: #7f8c8d;
+      margin-bottom: 4px;
+    }
+    .main .entry-body {
+      font-size: 9.5pt;
+      margin-bottom: 6px;
+    }
+    .main .entry-body ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    .main .entry-body ul li { margin-bottom: 2px; }
+    .main .entry-body ul li::before {
+      content: "\2022";
+      color: var(--accent);
+      font-weight: bold;
+      display: inline-block;
+      width: 14px;
+    }
+    .main .cert-item {
+      font-size: 9.5pt;
+      margin-bottom: 4px;
+    }
+    .no-print { display: none; }
+  </style>
+</head>
+<body>
+<table class="layout-table"><tr>
+<td class="sidebar">
+  {% if personal_info.profile_photo %}
+    <img src="{{ personal_info.profile_photo.url }}" alt="Photo" class="photo">
+  {% endif %}
+
+  <h3>Contact</h3>
+  <div class="contact-item">{{ personal_info.email }}</div>
+  <div class="contact-item">{{ personal_info.phone }}</div>
+  <div class="contact-item">{{ personal_info.location }}</div>
+  {% if personal_info.linkedin %}
+    <div class="contact-item"><a href="{{ personal_info.linkedin }}">LinkedIn</a></div>
+  {% endif %}
+  {% if personal_info.github %}
+    <div class="contact-item"><a href="{{ personal_info.github }}">GitHub</a></div>
+  {% endif %}
+  {% if personal_info.portfolio %}
+    <div class="contact-item"><a href="{{ personal_info.portfolio }}">Portfolio</a></div>
+  {% endif %}
+
+  {% if skills %}
+    <h3>Skills</h3>
+    {% for skill in skills %}
+      <div class="skill-item">
+        <span>{{ skill.name }}</span>
+        <span class="skill-bar">
+          <span class="skill-fill" style="width: {{ skill.proficiency }}%"></span>
+        </span>
+      </div>
+    {% endfor %}
+  {% endif %}
+</td>
+<td class="main">
+  <h1>{{ personal_info.full_name|default:resume.user.get_full_name|default:resume.user.username }}</h1>
+  <div class="title-line">{{ personal_info.location }}</div>
+
+  {% if summary and "summary" not in hidden_sections %}
+  <div class="section">
+    <h2>Summary</h2>
+    <div class="entry-body">
+      {% if summary.use_ai_version and summary.ai_enhanced_text %}
+        {{ summary.ai_enhanced_text|linebreaks }}
+      {% else %}
+        {{ summary.raw_text|linebreaks }}
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if experiences and "experience" not in hidden_sections %}
+  <div class="section">
+    <h2>Experience</h2>
+    {% for exp in experiences %}
+      <div class="entry-header">
+        <span class="left">{{ exp.job_title }}</span>
+        <span class="right">{{ exp.start_date|date:"M Y" }} – {% if exp.is_current %}Present{% else %}{{ exp.end_date|date:"M Y" }}{% endif %}</span>
+      </div>
+      <div class="entry-sub">{{ exp.company }}{% if exp.location %} — {{ exp.location }}{% endif %}</div>
+      <div class="entry-body">
+        {% if exp.use_ai_version and exp.ai_enhanced_description %}
+          {{ exp.ai_enhanced_description|linebreaks }}
+        {% else %}
+          {{ exp.raw_description|linebreaks }}
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if education and "education" not in hidden_sections %}
+  <div class="section">
+    <h2>Education</h2>
+    {% for edu in education %}
+      <div class="entry-header">
+        <span class="left">{{ edu.degree }}</span>
+        <span class="right">{{ edu.start_year }} – {% if edu.end_year %}{{ edu.end_year }}{% else %}Present{% endif %}</span>
+      </div>
+      <div class="entry-sub">{{ edu.institution }}{% if edu.location %} — {{ edu.location }}{% endif %}</div>
+      {% if edu.gpa or edu.honors %}
+        <div class="entry-body">
+          {% if edu.gpa %}GPA: {{ edu.gpa }}{% endif %}{% if edu.gpa and edu.honors %} | {% endif %}{% if edu.honors %}{{ edu.honors }}{% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if projects and "projects" not in hidden_sections %}
+  <div class="section">
+    <h2>Projects</h2>
+    {% for proj in projects %}
+      <div class="entry-header">{{ proj.title }}</div>
+      {% if proj.tech_stack %}<div class="entry-sub">{{ proj.tech_stack }}</div>{% endif %}
+      <div class="entry-body">
+        {% if proj.ai_enhanced_description %}
+          {{ proj.ai_enhanced_description|linebreaks }}
+        {% else %}
+          {{ proj.description|linebreaks }}
+        {% endif %}
+      </div>
+      {% if proj.url %}<div class="entry-body"><a href="{{ proj.url }}">{{ proj.url }}</a></div>{% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if certifications and "certifications" not in hidden_sections %}
+  <div class="section">
+    <h2>Certifications</h2>
+    {% for cert in certifications %}
+      <div class="cert-item"><strong>{{ cert.name }}</strong> — {{ cert.issuer }} ({{ cert.issue_date|date:"M Y" }})</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</td>
+</tr></table>
+</body>
+</html>

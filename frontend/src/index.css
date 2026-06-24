@@ -1,0 +1,204 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+
+:root {
+  --spacing-xxs: 2px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-xxl: 32px;
+  --spacing-huge: 64px;
+}
+
+@theme {
+  /* Brand & Accent */
+  --color-primary: #3ecf8e;
+  --color-primary-deep: #24b47e;
+  --color-primary-soft: #4ade80;
+  --color-accent-purple: #6b01c2;
+  --color-accent-violet: #644fc1;
+  --color-accent-yellow: #ffdb13;
+
+  /* Surface */
+  --color-canvas: #ffffff;
+  --color-canvas-soft: #fafafa;
+  --color-canvas-night: #1c1c1c;
+  --color-canvas-night-soft: #202020;
+
+  /* Hairlines */
+  --color-hairline: #dfdfdf;
+  --color-hairline-strong: #c7c7c7;
+  --color-hairline-cool: #ededed;
+  --color-hairline-cool-2: #efefef;
+  --color-hairline-cool-3: #d4d4d4;
+
+  /* Text */
+  --color-ink: #171717;
+  --color-ink-secondary: #212121;
+  --color-ink-mute: #707070;
+  --color-ink-mute-2: #9a9a9a;
+  --color-ink-faint: #b2b2b2;
+  --color-on-primary: #171717;
+  --color-on-dark: #ffffff;
+
+  /* Typography */
+  --font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-display: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, Menlo, Monaco, Consolas, monospace;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-canvas text-ink;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  ::selection {
+    @apply bg-primary/20 text-ink;
+  }
+}
+
+@layer components {
+  /* ─── Buttons ─── */
+  .btn-primary-green {
+    @apply inline-flex items-center justify-center gap-2 rounded-[6px] bg-primary px-4 py-2 text-sm font-medium text-on-primary transition-all duration-150 hover:bg-primary-deep focus:outline-none focus:ring-2 focus:ring-primary/40 disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98];
+  }
+
+  .btn-secondary-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-[6px] border border-hairline-strong bg-canvas px-4 py-2 text-sm font-medium text-ink transition-all duration-150 hover:bg-canvas-soft focus:outline-none focus:ring-2 focus:ring-hairline disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98];
+  }
+
+  .btn-on-dark {
+    @apply inline-flex items-center justify-center gap-2 rounded-[6px] bg-canvas-night px-4 py-2 text-sm font-medium text-on-dark transition-all duration-150 hover:bg-canvas-night-soft focus:outline-none focus:ring-2 focus:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98];
+  }
+
+  .btn-link {
+    @apply inline-flex items-center justify-center gap-2 text-sm font-medium text-ink transition-all duration-150 hover:underline focus:outline-none disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-[6px] bg-red-600 px-4 py-2 text-sm font-medium text-white transition-all duration-150 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-[6px] px-3 py-2 text-sm font-medium text-ink-mute transition-all duration-150 hover:bg-canvas-soft hover:text-ink focus:outline-none disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* ─── Inputs ─── */
+  .input-field {
+    @apply block w-full rounded-[6px] border border-hairline bg-canvas px-3 py-2 text-sm text-ink shadow-sm transition-all duration-150 placeholder:text-ink-faint hover:border-hairline-strong focus:border-primary focus:shadow-[0_0_0_3px_rgba(62,207,142,0.15)] focus:outline-none;
+  }
+
+  /* ─── Cards ─── */
+  .card {
+    @apply rounded-[12px] border border-hairline bg-canvas p-8;
+  }
+
+  .card-elevated {
+    @apply rounded-[12px] border border-hairline bg-canvas p-8 shadow-[0_1px_3px_rgba(0,0,0,0.06)];
+  }
+
+  .card-floating {
+    @apply rounded-[12px] border border-hairline bg-canvas p-8 shadow-[0_8px_24px_rgba(0,0,0,0.08)];
+  }
+
+  .card-dark {
+    @apply rounded-[12px] bg-canvas-night p-8 text-on-dark;
+  }
+
+  .card-pricing-featured {
+    @apply rounded-[12px] bg-canvas-night p-8 text-on-dark;
+  }
+
+  /* ─── Code Block ─── */
+  .code-block {
+    @apply rounded-[6px] bg-canvas-night px-4 py-4 font-mono text-sm text-on-dark;
+  }
+
+  /* ─── Badges / Pills ─── */
+  .pill-tag-green {
+    @apply inline-flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-xs font-medium text-on-primary;
+  }
+
+  .pill-tag-soft {
+    @apply inline-flex items-center gap-1 rounded-full bg-canvas-soft px-2 py-0.5 text-xs font-medium text-ink;
+  }
+
+  .badge-primary {
+    @apply inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary;
+  }
+
+  .badge-success {
+    @apply inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary;
+  }
+
+  .badge-warning {
+    @apply inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700;
+  }
+
+  /* ─── Typography ─── */
+  .label {
+    @apply mb-1 block text-sm font-medium text-ink;
+  }
+
+  .error-text {
+    @apply mt-1.5 text-sm text-red-600;
+  }
+
+  .section-title {
+    @apply text-lg font-medium text-ink;
+  }
+
+  .section-subtitle {
+    @apply text-sm text-ink-mute;
+  }
+
+  /* ─── Animations ─── */
+  .shimmer {
+    @apply relative overflow-hidden;
+  }
+
+  .shimmer::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    100% { transform: translateX(100%); }
+  }
+
+  .fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .scale-in {
+    animation: scaleIn 0.3s ease-out forwards;
+  }
+
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

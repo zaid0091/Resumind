@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Build professional resumes with AI-powered enhancement, multiple templates, and PDF export." />
+    <meta name="theme-color" content="#3ecf8e" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta property="og:title" content="Resumind - AI Resume Builder" />
+    <meta property="og:description" content="Build professional resumes with AI-powered enhancement, multiple templates, and PDF export." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>Resumind - AI Resume Builder</title>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js');
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

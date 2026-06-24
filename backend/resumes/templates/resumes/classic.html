@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ resume.title }}</title>
+  <style>
+    :root { --accent: {{ color_theme|default:"#000" }}; }
+    @page { size: A4; margin: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Georgia, "Times New Roman", Times, serif;
+      font-size: {% if font_size == "small" %}10pt{% elif font_size == "large" %}12pt{% else %}11pt{% endif %};
+      line-height: 1.5;
+      color: #000;
+      padding: 48px 56px;
+      width: 210mm;
+      min-height: 297mm;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .header h1 {
+      font-size: 22pt;
+      font-weight: bold;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+    .contact-row {
+      font-size: 10pt;
+      color: #333;
+    }
+    .contact-row span { margin: 0 8px; }
+    .contact-row a { color: var(--accent); text-decoration: none; }
+
+    .section { margin-bottom: 18px; }
+    .section h2 {
+      font-size: 12pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding-bottom: 3px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #000;
+    }
+
+    .entry { margin-bottom: 10px; }
+    .entry-header { font-weight: bold; font-size: 11pt; }
+    .entry-header .left { float: left; }
+    .entry-header .right { float: right; }
+    .entry-header::after { content: ""; display: table; clear: both; }
+    .entry-sub {
+      font-style: italic;
+      font-size: 10.5pt;
+      color: #444;
+    }
+    .entry-body {
+      font-size: 10.5pt;
+      margin-top: 3px;
+    }
+    .entry-body ul {
+      padding-left: 20px;
+      list-style: disc;
+    }
+    .entry-body ul li { margin-bottom: 2px; }
+
+    .skill-list { font-size: 10.5pt; }
+    .skill-list span {
+      display: inline-block;
+      margin-right: 12px;
+    }
+
+    .cert-item {
+      font-size: 10.5pt;
+      margin-bottom: 3px;
+    }
+
+    hr { border: none; border-top: 1px solid #ccc; margin: 4px 0 12px; }
+    a { color: var(--accent); text-decoration: none; }
+    .no-print { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>{{ personal_info.full_name|default:resume.user.get_full_name|default:resume.user.username }}</h1>
+  <div class="contact-row">
+    {% if personal_info.email %}<span>{{ personal_info.email }}</span>{% endif %}
+    {% if personal_info.phone %}<span>{{ personal_info.phone }}</span>{% endif %}
+    {% if personal_info.location %}<span>{{ personal_info.location }}</span>{% endif %}
+    {% if personal_info.linkedin %}<span><a href="{{ personal_info.linkedin }}">LinkedIn</a></span>{% endif %}
+    {% if personal_info.github %}<span><a href="{{ personal_info.github }}">GitHub</a></span>{% endif %}
+    {% if personal_info.portfolio %}<span><a href="{{ personal_info.portfolio }}">Portfolio</a></span>{% endif %}
+  </div>
+  <hr>
+</div>
+
+{% if summary and "summary" not in hidden_sections %}
+<div class="section">
+  <h2>Professional Summary</h2>
+  <div class="entry-body">
+    {% if summary.use_ai_version and summary.ai_enhanced_text %}
+      {{ summary.ai_enhanced_text|linebreaks }}
+    {% else %}
+      {{ summary.raw_text|linebreaks }}
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
+{% if experiences and "experience" not in hidden_sections %}
+<div class="section">
+  <h2>Experience</h2>
+  {% for exp in experiences %}
+    <div class="entry">
+      <div class="entry-header">
+        <span class="left">{{ exp.job_title }}</span>
+        <span class="right">{{ exp.start_date|date:"M Y" }} – {% if exp.is_current %}Present{% else %}{{ exp.end_date|date:"M Y" }}{% endif %}</span>
+      </div>
+      <div class="entry-sub">{{ exp.company }}{% if exp.location %} — {{ exp.location }}{% endif %}</div>
+      <div class="entry-body">
+        {% if exp.use_ai_version and exp.ai_enhanced_description %}
+          {{ exp.ai_enhanced_description|linebreaks }}
+        {% else %}
+          {{ exp.raw_description|linebreaks }}
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if education and "education" not in hidden_sections %}
+<div class="section">
+  <h2>Education</h2>
+  {% for edu in education %}
+    <div class="entry">
+      <div class="entry-header">
+        <span class="left">{{ edu.degree }}</span>
+        <span class="right">{{ edu.start_year }} – {% if edu.end_year %}{{ edu.end_year }}{% else %}Present{% endif %}</span>
+      </div>
+      <div class="entry-sub">{{ edu.institution }}{% if edu.location %} — {{ edu.location }}{% endif %}</div>
+      {% if edu.gpa or edu.honors %}
+        <div class="entry-body">
+          {% if edu.gpa %}GPA: {{ edu.gpa }}{% endif %}{% if edu.gpa and edu.honors %} | {% endif %}{% if edu.honors %}{{ edu.honors }}{% endif %}
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if skills and "skills" not in hidden_sections %}
+<div class="section">
+  <h2>Skills</h2>
+  <div class="skill-list">
+    {% regroup skills by get_category_display as skill_groups %}
+    {% for group in skill_groups %}
+      <strong>{{ group.grouper }}:</strong>
+      {% for skill in group.list %}
+        <span>{{ skill.name }}</span>{% if not forloop.last %} · {% endif %}
+      {% endfor %}
+      <br>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% if projects and "projects" not in hidden_sections %}
+<div class="section">
+  <h2>Projects</h2>
+  {% for proj in projects %}
+    <div class="entry">
+      <div class="entry-header">{{ proj.title }}</div>
+      {% if proj.tech_stack %}<div class="entry-sub">{{ proj.tech_stack }}</div>{% endif %}
+      <div class="entry-body">
+        {% if proj.ai_enhanced_description %}
+          {{ proj.ai_enhanced_description|linebreaks }}
+        {% else %}
+          {{ proj.description|linebreaks }}
+        {% endif %}
+      </div>
+      {% if proj.url %}<div class="entry-body"><a href="{{ proj.url }}">{{ proj.url }}</a></div>{% endif %}
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if certifications and "certifications" not in hidden_sections %}
+<div class="section">
+  <h2>Certifications</h2>
+  {% for cert in certifications %}
+    <div class="cert-item">
+      <strong>{{ cert.name }}</strong> — {{ cert.issuer }}, {{ cert.issue_date|date:"M Y" }}
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+</body>
+</html>
